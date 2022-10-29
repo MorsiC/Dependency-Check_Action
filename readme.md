@@ -9,7 +9,16 @@ This action is based upon the OWASP Dependency-Check [tool](https://owasp.org/ww
 
 # How does it work?
 
-The action receives three parameters: Project name, scanpath and report format, but more parameters can be added as optional. 
+The action has three required parameters:
+
+- `project`: the project name
+- `path`: the scanpath
+- `format`: the report format
+
+Additionally, you can specify:
+
+- `out`: the output folder location relative to the github workspace, by default it will be `reports`
+- `args`: any remaining flags and parameters to the binary, check the [arguments page](https://jeremylong.github.io/DependencyCheck/dependency-check-cli/arguments.html) for valid options
 
 Example:
 ```
@@ -31,8 +40,11 @@ jobs:
         with:
           project: 'test'
           path: '.'
-          format: 'HTML'    
-          others: ''
+          format: 'HTML'
+          out: 'reports' # this is the default, no need to specify unless you wish to override it
+          args: >
+            --failOnCVSS 7
+            --enableRetired
       - name: Upload Test results
         uses: actions/upload-artifact@master
         with:
@@ -40,7 +52,22 @@ jobs:
            path: ${{github.workspace}}/reports
 ```
 
-*others* allows to pass random flags and parameters to the binary.
+### Error: JAVA_HOME is not defined correctly 
+When used in conjunction with the GitHub Action [setup-java](https://github.com/actions/setup-java) you will see the error `Error: JAVA_HOME is not defined correctly`
+
+This is due to the environment variable `JAVA_HOME` being changed by the setup-java GitHub Action. To fix this problem you will need to reset `JAVA_HOME` to match how it's being set in the image [Dependency-Check Docker Image](https://github.com/jeremylong/DependencyCheck/blob/main/Dockerfile#L16) within the Depcheck step. 
+
+Example:
+```
+```yaml
+...
+- name: Depcheck
+uses: dependency-check/Dependency-Check_Action@main
+env:
+  # actions/setup-java@v1 changes JAVA_HOME so it needs to be reset to match the depcheck image
+  JAVA_HOME: /opt/jdk
+...
+```
 
 # How Do I Use It?
 We recommend adding the above example into your .github/workflows directory, using a name of your choice, in this example main.yml.

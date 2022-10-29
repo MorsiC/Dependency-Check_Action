@@ -17,7 +17,7 @@ inputs:
         required: false
 runs:
     using: 'docker'
-    image: 'docker://owasp/dependency-check-action:latest'
+    image: 'Dockerfile'
     args:
 
         - '--project'
@@ -29,6 +29,6 @@ runs:
         - '--failOnCVSS' 
         - '${{ inputs.failoncvss }}'
         - '--out'
-        -  '/github/workspace/reports'
+        -  '/github/workspace/${{ inputs.out }}'
         - '--noupdate'
-        - '${{ inputs.others }}'
+        - ${{ inputs.args }}
