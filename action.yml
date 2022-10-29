@@ -9,13 +9,16 @@ inputs:
         required: true
     path:
         required: true  
-    format:
+    format1:
         required: true
+    format2:
+        required: false
     out:
         required: true
         default: 'reports'
-
-    args:
+    failoncvss:
+        required: false
+    others:
         required: false
 runs:
     using: 'docker'
@@ -27,7 +30,11 @@ runs:
         - '--scan'
         - '${{ inputs.path }}'
         - '--format' 
-        - '${{ inputs.format }}'
+        - '${{ inputs.format1 }}'
+        - '--format' 
+        - '${{ inputs.format2 }}'
+        - '--failOnCVSS' 
+        - '${{ inputs.failoncvss }}'
         - '--out'
         -  '/github/workspace/${{ inputs.out }}'
         - '--noupdate'
