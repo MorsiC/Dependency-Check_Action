@@ -9,8 +9,13 @@ inputs:
         required: true
     path:
         required: true  
-    format:
+    format1:
         required: true
+    format2:
+        required: false
+    out:
+        required: true
+        default: 'reports'
     failoncvss:
         required: false
     others:
@@ -25,7 +30,9 @@ runs:
         - '--scan'
         - '${{ inputs.path }}'
         - '--format' 
-        - '${{ inputs.format }}'
+        - '${{ inputs.format1 }}'
+        - '--format' 
+        - '${{ inputs.format2 }}'
         - '--failOnCVSS' 
         - '${{ inputs.failoncvss }}'
         - '--out'
