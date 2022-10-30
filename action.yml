@@ -6,17 +6,27 @@ branding:
   color: 'red'
 inputs:
     project:
-        required: true
+       required: true
     path:
-        required: true  
+       required: true  
     format1:
-        required: true
+       required: true
+       default: 'HTML'
     format2:
-        required: false
+       required: false
     out:
+       required: true
+       default: 'reports'
+    failOnCVSS:
+       required: true
+       default: 7
+    junitFailOnCVSS:
+       required: true
+       default: 7
+    exclude:
         required: true
-        default: 'reports'
-    failoncvss:
+    disableRetireJS:
+        description: 'Optionnally, enable JS analysis. Keep empty to keep JS analysis disabled'
         required: false
     others:
         required: false
@@ -24,7 +34,6 @@ runs:
     using: 'docker'
     image: 'Dockerfile'
     args:
-
         - '--project'
         - '${{ inputs.project }}'
         - '--scan'
@@ -32,10 +41,15 @@ runs:
         - '--format' 
         - '${{ inputs.format1 }}'
         - '--format' 
-        - '${{ inputs.format2 }}'
+        - ${{ [inputs.format1, inputs.format2][inputs.format2] }}
         - '--failOnCVSS' 
-        - '${{ inputs.failoncvss }}'
+        - '${{ inputs.failOnCVSS }}'
+        - '--junitFailOnCVSS' 
+        - '${{ inputs.junitFailOnCVSS }}'
         - '--out'
         -  '/github/workspace/${{ inputs.out }}'
+        - '--exclude'
+        -  '${{ inputs.exclude }}'
         - '--noupdate'
-        - ${{ inputs.args }}
+        - ${{ ["--disableRetireJS", "--noupdate"][inputs.disableRetireJS] }}
+        - ${{ inputs.others }}
