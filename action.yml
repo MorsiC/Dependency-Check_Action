@@ -13,7 +13,8 @@ inputs:
        required: true
        default: 'HTML'
     format2:
-       required: false
+       required: true
+       default: 'HTML'
     out:
        required: true
        default: 'reports'
@@ -41,7 +42,7 @@ runs:
         - '--format' 
         - '${{ inputs.format1 }}'
         - '--format' 
-        - ${{ fromJson('[ inputs.format1 , inputs.format2 ]')[ inputs.format2 ] }}
+        - '${{ inputs.format2 }}'
         - '--failOnCVSS' 
         - '${{ inputs.failOnCVSS }}'
         - '--junitFailOnCVSS' 
